@@ -22,11 +22,24 @@ spec:
             workingDir: /workspace/source
           steps:
             - image: mcr.microsoft.com/dotnet/core/sdk:3.1
-              name: build-dotnet-assembly-name
+              name: dotnet-restore
+              resources: {}
+              script: |
+                #!/bin/bash
+                dotnet restore
+            - image: mcr.microsoft.com/dotnet/core/sdk:3.1
+              name: dotnet-publish
+              resources: {}
+              script: |
+                #!/bin/bash
+                dotnet publish -c Release -o output
+            - image: mcr.microsoft.com/dotnet/core/sdk:3.1
+              name: dotnet-assembly-name
               resources: {}
               script: |
                 #!/bin/bash
                 filename=$(awk -F "/" '{print $NF}'<<< $(find . -name "*.csproj" -print)); echo  ${filename%.*} > output/__assemblyname
+
   podTemplate: {}
   serviceAccountName: tekton-bot
   timeout: 12h0m0s
