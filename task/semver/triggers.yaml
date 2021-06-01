@@ -1,0 +1,9 @@
+apiVersion: config.lighthouse.jenkins-x.io/v1alpha1
+kind: TriggerConfig
+spec:
+  presubmits:
+    - name: semver-release
+      context: "semver-release"
+      always_run: true
+      optional: false
+      source: "semver.yaml"

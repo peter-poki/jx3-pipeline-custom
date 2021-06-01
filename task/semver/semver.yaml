@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: semver
+  spec:
+  stepTemplate:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    workingDir: /workspace/source
+  steps:
+    - script: |
+        #!/usr/bin/env sh
+        last_message="$(git log --no-merges -1 --pretty=%B)"
+        echo "Last commit message is: $last_message."
+        (
+        case $last_message in
+          "fix:"*) echo "Contains SemVer release info" && exit 0 ;;
+          "feat:"*) echo "Contains SemVer release info" && exit 0 ;;
+          "BREAKING CHANGE:"*) echo "Contains SemVer release info" && exit 0 ;;
+          *)  echo "Missing SemVer release info" && exit 1  ;;
+        esac
+        )
+      image: alpine/git
+      name: semver-check
