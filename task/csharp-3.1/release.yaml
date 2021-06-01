@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   creationTimestamp: null
-  name: pullrequest
+  name: release
 spec:
   pipelineSpec:
     tasks:
@@ -39,7 +39,6 @@ spec:
               script: |
                 #!/bin/bash
                 filename=$(awk -F "/" '{print $NF}'<<< $(find . -name "*.csproj" -print)); echo  ${filename%.*} > output/__assemblyname
-
   podTemplate: {}
   serviceAccountName: tekton-bot
   timeout: 12h0m0s
