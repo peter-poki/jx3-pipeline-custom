@@ -21,6 +21,12 @@ spec:
                 memory: 256Mi
             workingDir: /workspace/source
           steps:
+            - image: node:14-alpine 
+              name: npm-install
+              resources: {}
+              script: |
+                #!/bin/sh
+                npm install
             - image: node:14-alpine
               name: npm-lint
               resources: {}
