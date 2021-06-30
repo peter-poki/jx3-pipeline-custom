@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  creationTimestamp: null
+  name: release
+spec:
+  pipelineSpec:
+    tasks:
+      - name: from-build-pack
+        resources: {}
+        taskSpec:
+          metadata: {}
+          stepTemplate:
+            env:
+              - name: HOME
+                value: /tekton/home
+            name: ""
+            resources:
+              requests:
+                cpu: 200m
+                memory: 256Mi
+            workingDir: /workspace/source
+          steps:
+            - image: node:14-alpine
+              name: npm-lint
+              resources: {}
+              script: |
+                #!/bin/sh
+                npm run lint
+            - image: gcr.io/jenkinsxio/jx-gitops:0.0.439
+              script: |
+                #!/usr/bin/env bash
+                lines_count=$(wc -l linter-output.txt | awk '{print $1}')
+                (
+                  if (( lines_count > 0)); then
+                    echo "There are problems with linting";
+                    jx-gitops pr comment -c "<p>There are LINT problems, see: </p><code>$(cat linter-output.txt)</code>";
+                    exit 1;
+                  else
+                    echo "There are NO problems with linting".
+                    exit 0;
+                  fi
+                )
+              name: npm-lint-output
+            - image: node:14-alpine 
+              name: npm-build
+              resources: {}
+              script: |
+                #!/bin/sh
+                npm run build
+  podTemplate: {}
+  serviceAccountName: tekton-bot
+  timeout: 12h0m0s
+status: {}
