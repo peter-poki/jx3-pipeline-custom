@@ -16,3 +16,4 @@
 
 # IntelliJ IDEs
 .idea/
+.DS_Store
