@@ -26,7 +26,7 @@ spec:
               resources: {}
               script: |
                 #!/bin/sh
-                CI=true DISPLAY=:99 npm install
+                CI=true DISPLAY=:99 npm install --force
             - image: node:16-alpine
               name: npm-lint
               resources: {}
