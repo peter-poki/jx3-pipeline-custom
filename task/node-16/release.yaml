@@ -33,7 +33,7 @@ spec:
               script: |
                 #!/bin/sh
                 npm run lint
-            - image: node:16-bullseye
+            - image: bash:5.1
               script: |
                 #!/usr/bin/env bash
                 lines_count=$(wc -l linter-output.txt | awk '{print $1}')
