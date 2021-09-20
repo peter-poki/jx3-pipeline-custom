@@ -33,7 +33,7 @@ spec:
               script: |
                 #!/bin/sh
                 npm run lint
-            - image: gcr.io/jenkinsxio/jx-gitops:0.0.439
+            - image: node:16-bullseye
               script: |
                 #!/usr/bin/env bash
                 lines_count=$(wc -l linter-output.txt | awk '{print $1}')
