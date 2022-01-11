@@ -21,14 +21,14 @@ spec:
                 memory: 256Mi
             workingDir: /workspace/source
           steps:
-          - image: gcr.io/kaniko-project/executor:v1.3.0-debug
-            name: build-container-build
-            resources: {}
-            script: |
-              #!/busybox/sh
-              source .jx/variables.sh
-              cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
-              /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=${DOCKERFILE_PATH:-Dockerfile} --destination=$PUSH_CONTAINER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION
+            - image: gcr.io/kaniko-project/executor:v1.3.0-debug
+              name: build-container-build
+              resources: {}
+              script: |
+                #!/busybox/sh
+                source .jx/variables.sh
+                cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
+                /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=${DOCKERFILE_PATH:-Dockerfile} --destination=$PUSH_CONTAINER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION
   podTemplate: {}
   serviceAccountName: tekton-bot
   timeout: 12h0m0s
