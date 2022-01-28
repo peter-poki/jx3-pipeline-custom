@@ -24,18 +24,27 @@ spec:
             - image: mcr.microsoft.com/dotnet/sdk:6.0
               name: dotnet-restore
               resources: {}
+              env:
+                - name: DOTNET_CLI_TELEMETRY_OPTOUT
+                  value: 'true'
               script: |
                 #!/bin/bash
                 dotnet restore
             - image: mcr.microsoft.com/dotnet/sdk:6.0
               name: dotnet-publish
               resources: {}
+              env:
+                - name: DOTNET_CLI_TELEMETRY_OPTOUT
+                  value: 'true'
               script: |
                 #!/bin/bash
                 dotnet publish -c Release -o output
             - image: mcr.microsoft.com/dotnet/sdk:6.0
               name: dotnet-assembly-name
               resources: {}
+              env:
+                - name: DOTNET_CLI_TELEMETRY_OPTOUT
+                  value: 'true'
               script: |
                 #!/bin/bash
                 filename=$(awk -F "/" '{print $NF}'<<< $(find . -name "*.csproj" -print)); echo  ${filename%.*} > output/__assemblyname
