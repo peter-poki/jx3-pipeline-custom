@@ -16,9 +16,8 @@ spec:
                 value: /tekton/home
             name: ""
             resources:
-              requests:
-                cpu: 200m
-                memory: 256Mi
+              # override limits for all containers here
+              limits: {}
             workingDir: /workspace/source
           steps:
             - script: |
@@ -34,6 +33,10 @@ spec:
                 esac
                 )
               image: alpine/git
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
               name: semver-check
   podTemplate: {}
   serviceAccountName: tekton-bot

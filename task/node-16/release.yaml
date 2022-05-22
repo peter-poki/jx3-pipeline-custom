@@ -16,24 +16,33 @@ spec:
                 value: /tekton/home
             name: ""
             resources:
-              requests:
-                cpu: 200m
-                memory: 256Mi
+              # override limits for all containers here
+              limits: {}
             workingDir: /workspace/source
           steps:
             - image: node:16-alpine
               name: npm-install
-              resources: {}
+              resources: 
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
               script: |
                 #!/bin/sh
                 CI=true DISPLAY=:99 npm install --force
             - image: node:16-alpine
               name: npm-lint
-              resources: {}
+              resources: 
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
               script: |
                 #!/bin/sh
                 npm run lint
             - image: bash:5.1
+              resources: 
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
               script: |
                 #!/usr/bin/env bash
                 lines_count=$(wc -l linter-output.txt | awk '{print $1}')
@@ -50,7 +59,10 @@ spec:
               name: npm-lint-output
             - image: node:16-alpine
               name: npm-build
-              resources: {}
+              resources: 
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
               script: |
                 #!/bin/sh
                 npm run build

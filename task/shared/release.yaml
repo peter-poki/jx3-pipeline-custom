@@ -16,14 +16,16 @@ spec:
                 value: /tekton/home
             name: ""
             resources:
-              requests:
-                cpu: 200m
-                memory: 256Mi
+              # override limits for all containers here
+              limits: {}
             workingDir: /workspace/source
           steps:
             - image: gcr.io/kaniko-project/executor:v1.3.0-debug
               name: build-container-build
-              resources: {}
+              resources: 
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
               script: |
                 #!/busybox/sh
                 source .jx/variables.sh

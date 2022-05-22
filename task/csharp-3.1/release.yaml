@@ -16,26 +16,34 @@ spec:
                 value: /tekton/home
             name: ""
             resources:
-              requests:
-                cpu: 200m
-                memory: 256Mi
+              # override limits for all containers here
+              limits: {}
             workingDir: /workspace/source
           steps:
             - image: mcr.microsoft.com/dotnet/core/sdk:3.1
               name: dotnet-restore
-              resources: {}
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
               script: |
                 #!/bin/bash
                 dotnet restore
             - image: mcr.microsoft.com/dotnet/core/sdk:3.1
               name: dotnet-publish
-              resources: {}
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
               script: |
                 #!/bin/bash
                 dotnet publish -c Release -o output
             - image: mcr.microsoft.com/dotnet/core/sdk:3.1
               name: dotnet-assembly-name
-              resources: {}
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
               script: |
                 #!/bin/bash
                 filename=$(awk -F "/" '{print $NF}'<<< $(find . -name "*.csproj" -print)); echo  ${filename%.*} > output/__assemblyname
