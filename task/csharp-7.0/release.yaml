@@ -1,0 +1,62 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  creationTimestamp: null
+  name: release
+spec:
+  pipelineSpec:
+    tasks:
+      - name: from-build-pack
+        resources: {}
+        taskSpec:
+          metadata: {}
+          stepTemplate:
+            env:
+              - name: HOME
+                value: /tekton/home
+            name: ""
+            resources:
+              # override limits for all containers here
+              limits: {}
+            workingDir: /workspace/source
+          steps:
+            - image: mcr.microsoft.com/dotnet/sdk:7.0
+              name: dotnet-restore
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
+              env:
+                - name: DOTNET_CLI_TELEMETRY_OPTOUT
+                  value: "true"
+              script: |
+                #!/bin/bash
+                dotnet restore
+            - image: mcr.microsoft.com/dotnet/sdk:7.0
+              name: dotnet-publish
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
+              env:
+                - name: DOTNET_CLI_TELEMETRY_OPTOUT
+                  value: "true"
+              script: |
+                #!/bin/bash
+                dotnet publish -c Release -o output
+            - image: mcr.microsoft.com/dotnet/sdk:7.0
+              name: dotnet-assembly-name
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 256Mi
+              env:
+                - name: DOTNET_CLI_TELEMETRY_OPTOUT
+                  value: "true"
+              script: |
+                #!/bin/bash
+                filename=$(awk -F "/" '{print $NF}'<<< $(find . -name "*.csproj" -print)); echo  ${filename%.*} > output/__assemblyname
+  podTemplate: {}
+  serviceAccountName: tekton-bot
+  timeout: 12h0m0s
+status: {}
